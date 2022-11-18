@@ -5,10 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) Attach",
+            "name": "Debug program",
             "type": "cppdbg",
-            "request": "attach",
-            "program": "${workspaceFolder}/main.out", // TODO
+            "request": "launch",
+            "program": "${workspaceFolder}/bugged-program",
+			"cwd": "${workspaceFolder}",
+			"preLaunchTask": "make",
             "MIMode": "lldb"
         }
     ]
