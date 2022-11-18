@@ -22,16 +22,16 @@ static int ft_isdigit(int c)
 
 static bool	ft_isspace(char c)
 {
-	static const char*	spaces = " \n\t\v\f\r";
-	size_t				i;
-
-	i = 0;
-	while (i < sizeof(spaces))
-	{
-		if (c == spaces[i])
-			return (true);
-		i++;
-	}
+	if (c == ' ')
+		return (true);
+	if (c == '\t')
+		return (true);
+	if (c == '\v')
+		return (true);
+	if (c == '\f')
+		return (true);
+	if (c == '\r')
+		return (true);
 	return (false);
 }
 
