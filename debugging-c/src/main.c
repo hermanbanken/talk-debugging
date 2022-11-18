@@ -1,4 +1,67 @@
-int main()
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2020/10/26 17:30:43 by jkoers        #+#    #+#                 */
+/*   Updated: 2022/11/18 09:35:58 by jkoers        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdio.h>
+
+static int ft_isdigit(int c)
 {
-	return (1);
+	return (c >= '0' && c <= '9');
+}
+
+
+static bool	ft_isspace(char c)
+{
+	static const char*	spaces = " \n\t\v\f\r";
+	size_t				i;
+
+	i = 0;
+	while (i < sizeof(spaces))
+	{
+		if (c == spaces[i])
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+int			ft_atoi(char *str)
+{
+	int		result;
+	bool	is_negative;
+
+	while (ft_isspace(*str))
+		str++;
+	is_negative = *str == '-';
+	if (*str == '-' || *str == '+')
+		str++;
+	result = 0;
+	while (ft_isdigit(*str))
+	{
+		result *= 10;
+		result -= (int)(*str - 47);
+		str++;
+	}
+	return (is_negative ? result : (-result));
+}
+
+int main() {
+	printf("%d\n", ft_atoi("123"));
+	printf("%d\n", ft_atoi("42"));
+	printf("%d\n", ft_atoi("0"));
+	printf("%d\n", ft_atoi("-42"));
+	printf("%d\n", ft_atoi("2147483647"));
+	printf("%d\n", ft_atoi("-2147483648"));
+	printf("%d\n", ft_atoi("  +1"));
+	printf("%d\n", ft_atoi("  -42"));
 }
