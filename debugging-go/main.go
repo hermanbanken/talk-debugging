@@ -28,9 +28,11 @@ func ft_atoi(str string) int {
 		idx++
 	}
 
-	is_negative = str[idx] == '-'
-	if str[idx] == '-' || str[idx] == '+' {
-		idx++
+	if idx < len(str) {
+		is_negative = str[idx] == '-'
+		if str[idx] == '-' || str[idx] == '+' {
+			idx++
+		}
 	}
 
 	result = 0
@@ -56,4 +58,6 @@ func main() {
 	fmt.Printf("%d\n", ft_atoi("-2147483648"))
 	fmt.Printf("%d\n", ft_atoi("  +1"))
 	fmt.Printf("%d\n", ft_atoi("  -42"))
+
+	serve()
 }
