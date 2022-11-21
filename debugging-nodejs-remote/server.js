@@ -1,4 +1,4 @@
-require('@google-cloud/debug-agent').start({serviceContext: {enableCanary: false}});
+require('@google-cloud/debug-agent').start({serviceContext: {}, allowExpressions: true});
 const {URL} = require("url");
 const {createServer} = require("http");
 
