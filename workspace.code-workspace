@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "debugging-c"
+		},
+		{
+			"path": "debugging-go"
+		},
+		{
+			"path": "debugging-nodejs-remote"
+		},
+		{
+			"path": "profiler"
+		}
+	],
+	"settings": {}
+}
