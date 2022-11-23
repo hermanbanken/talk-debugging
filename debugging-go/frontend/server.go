@@ -98,7 +98,7 @@ func solveEquation(ctx context.Context, equation string) (res int, err error) {
 	}()
 
 	var job jobt.Job
-	resp, err := otelhttp.Post(ctx, os.Getenv("URL_EQUATIONS"), "text/plain", strings.NewReader(equation))
+	resp, err := otelhttp.Post(ctx, os.Getenv("URL_EQUATIONS")+"/parseEquation", "text/plain", strings.NewReader(equation))
 	if err != nil {
 		return 0, errors.Wrap(err, "equations")
 	}
@@ -153,7 +153,7 @@ func solveRecursive(ctx context.Context, job jobt.Job) (res int, err error) {
 		return
 	}
 
-	resp, err := otelhttp.Post(ctx, os.Getenv("URL_CALCULATOR"), "text/plain", buf)
+	resp, err := otelhttp.Post(ctx, os.Getenv("URL_CALCULATOR")+"/calculate", "text/plain", buf)
 	if err != nil {
 		return 0, errors.Wrap(err, "calculator")
 	}
