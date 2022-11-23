@@ -50,6 +50,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func calc(ctx context.Context, j job.Job) (res int, err error) {
 	_, span := otel.Tracer("calc").Start(ctx, "calc")
+	span.SetName("calculate " + j.String())
 	defer span.End()
 	defer func() {
 		if err == nil {
