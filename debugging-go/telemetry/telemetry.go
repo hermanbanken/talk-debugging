@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	texporter "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
+	"github.com/blendle/zapdriver"
 	"go.uber.org/zap"
 
 	"cloud.google.com/go/compute/metadata"
@@ -26,7 +27,7 @@ func init() {
 		return
 	}
 
-	config := zap.NewProductionConfig()
+	config := zapdriver.NewProductionConfig()
 	config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 	l, _ := config.Build()
 	zap.ReplaceGlobals(l)

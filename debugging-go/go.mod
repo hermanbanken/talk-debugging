@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/compute v1.6.1
 	cloud.google.com/go/profiler v0.3.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.10.1
+	github.com/blendle/zapdriver v1.3.1
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.36.4
