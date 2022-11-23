@@ -3,16 +3,16 @@ package main
 import (
 	"bytes"
 	"context"
-	"dummy/atoi"
-	"dummy/util"
 	"encoding/gob"
 	"io"
 	"math/rand"
 	"net/http"
 	"time"
 
+	"dummy/atoi"
 	"dummy/calculator/job"
 	"dummy/telemetry"
+	"dummy/util"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
