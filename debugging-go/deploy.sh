@@ -1,7 +1,7 @@
 export KO_DOCKER_REPO=eu.gcr.io/herman-codam-tmp-nov-2022
 calculator=$(ko build ./calculator) && \
 equations=$(ko build ./equations) && \
-frontend=$(ko build ./)
+frontend=$(ko build ./frontend)
 
 gcloud run deploy calculator -q --image $calculator --region=europe-west4 --allow-unauthenticated --set-env-vars=OTEL_SERVICE_NAME=calculator,OTEL_RESOURCE_ATTRIBUTES=g.co/gae/app/module=calculator
 gcloud run deploy equations -q --image $equations --region=europe-west4 --allow-unauthenticated --set-env-vars=OTEL_SERVICE_NAME=equations,OTEL_RESOURCE_ATTRIBUTES=g.co/gae/app/module=equations
