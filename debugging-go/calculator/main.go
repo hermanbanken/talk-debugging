@@ -57,7 +57,7 @@ func calc(ctx context.Context, j job.Job) (res int, err error) {
 		if err == nil {
 			span.SetStatus(codes.Ok, "done")
 		} else {
-			telemetry.WrapZap(ctx, zap.L()).Sugar().Error("error calculating %s: %v", j, err)
+			telemetry.WrapZap(ctx, zap.L()).Sugar().Errorf("error calculating %s: %v", j, err)
 			span.SetStatus(codes.Error, err.Error())
 			span.RecordError(err)
 		}

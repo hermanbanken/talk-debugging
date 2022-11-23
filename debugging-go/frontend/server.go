@@ -118,7 +118,7 @@ func solveRecursive(ctx context.Context, job jobt.Job) (res int, err error) {
 	ctx, span := otel.Tracer("frontend").Start(ctx, "solveRecursive")
 	span.SetAttributes(attribute.String("job", job.String()))
 	defer span.End()
-	telemetry.WrapZap(ctx, zap.L()).Sugar().Info("solving %s", job)
+	telemetry.WrapZap(ctx, zap.L()).Sugar().Infof("solving %s", job)
 
 	var a, b int
 
