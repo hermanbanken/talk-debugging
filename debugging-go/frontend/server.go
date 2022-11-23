@@ -64,7 +64,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		result, err := solveEquation(ctx, r.FormValue("equation"))
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusTeapot)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 

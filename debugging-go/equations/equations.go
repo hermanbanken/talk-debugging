@@ -42,6 +42,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		result, err := parseEquation(r.Context(), data)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 
 		err = gob.NewEncoder(w).Encode(result)
