@@ -1,3 +1,0 @@
-[submodule "tracing-microservices-demo"]
-	path = tracing-microservices-demo
-	url = https://github.com/GoogleCloudPlatform/microservices-demo.git
