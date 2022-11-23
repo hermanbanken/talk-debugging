@@ -1,41 +1,48 @@
 package main
 
 import (
+	"bytes"
 	"context"
-	"fmt"
+	_ "embed"
+	"encoding/gob"
+	"html/template"
 	"log"
-	"math/rand"
 	"net"
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
+	jobt "dummy/calculator/job"
+	"dummy/telemetry"
+	"dummy/util"
+
+	"github.com/pkg/errors"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/codes"
 )
 
+func init() {
+	telemetry.ServiceName = "frontend"
+}
+
+//go:embed index.html
+var indexTemplateStr string
+var indexTemplate = template.Must(template.New("").Parse(indexTemplateStr))
+
+type indexData struct {
+	Equation string
+	Result   *int
+}
+
 func serve() {
-	ln, err := net.Listen("tcp", addr())
+	ln, err := net.Listen("tcp", util.Addr())
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("Listening on http://%s", ln.Addr())
 
-	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		actBusy(ctx, 100*time.Millisecond) // act busy
-
-		// Calculate atoi
-		path := strings.TrimPrefix(r.URL.Path, "/")
-		result := calculate(ctx, path)
-		trace.SpanFromContext(ctx).AddEvent("calculated", trace.WithAttributes(attribute.Int("result", result)))
-		w.Write([]byte(fmt.Sprintf("%d", result)))
-
-		actBusy(ctx, 42*time.Millisecond) // act busy
-	})
+	var handler http.Handler = http.HandlerFunc(handler)
 	handler = otelhttp.NewHandler(handler, "http", otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string { return r.URL.Path }))
 	err = http.Serve(ln, handler)
 
@@ -44,23 +51,97 @@ func serve() {
 	}
 }
 
-func actBusy(ctx context.Context, d time.Duration) {
-	_, span := otel.Tracer("myService").Start(ctx, "sleep")
-	defer span.End()
+func handler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	util.DoBusyWork(10000) // act busy
 
-	time.Sleep(d + time.Duration(float64(d/2)*(rand.Float64()-0.5))) // little bit of gauss
-}
+	if r.Method == http.MethodPost {
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
-func calculate(ctx context.Context, str string) int {
-	_, span := otel.Tracer("myService").Start(ctx, "calculate")
-	defer span.End()
+		result, err := solveEquation(ctx, r.FormValue("equation"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusTeapot)
+			return
+		}
 
-	return ft_atoi(str)
-}
-
-func addr() string {
-	if port, hasPort := os.LookupEnv("PORT"); hasPort {
-		return ":" + port
+		indexTemplate.Execute(w, indexData{
+			Equation: r.FormValue("equation"),
+			Result:   &result,
+		})
+		return
 	}
-	return ":8080"
+
+	indexTemplate.Execute(w, indexData{
+		Equation: "",
+		Result:   nil,
+	})
+}
+
+func solveEquation(ctx context.Context, equation string) (res int, err error) {
+	_, span := otel.Tracer("frontend").Start(ctx, "solve")
+	defer span.End()
+	defer func() {
+		if err == nil {
+			span.SetStatus(codes.Ok, "done")
+		} else {
+			span.SetStatus(codes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	var job jobt.Job
+	resp, err := otelhttp.Post(ctx, os.Getenv("URL_EQUATIONS"), "text/plain", strings.NewReader(equation))
+	if err != nil {
+		return 0, errors.Wrap(err, "equations")
+	}
+	err = gob.NewDecoder(resp.Body).Decode(&job)
+	if err != nil {
+		return 0, errors.Wrap(err, "gob")
+	}
+
+	return solveRecursive(ctx, job)
+}
+
+func solveRecursive(ctx context.Context, job jobt.Job) (res int, err error) {
+	var a, b int
+
+	switch v := job.A.(type) {
+	case jobt.Value:
+		a = int(v)
+	case jobt.Job:
+		a, err = solveRecursive(ctx, v)
+		if err != nil {
+			return
+		}
+	}
+
+	switch v := job.B.(type) {
+	case jobt.Value:
+		b = int(v)
+	case jobt.Job:
+		b, err = solveRecursive(ctx, v)
+		if err != nil {
+			return
+		}
+	}
+
+	buf := bytes.NewBuffer(nil)
+	err = errors.Wrap(gob.NewEncoder(buf).Encode(jobt.Job{
+		Op: job.Op,
+		A:  jobt.Value(a),
+		B:  jobt.Value(b),
+	}), "gob encode")
+	if err != nil {
+		return
+	}
+
+	resp, err := otelhttp.Post(ctx, os.Getenv("URL_CALCULATOR"), "text/plain", buf)
+	if err != nil {
+		return 0, errors.Wrap(err, "calculator")
+	}
+	err = gob.NewDecoder(resp.Body).Decode(&res)
+	return
 }

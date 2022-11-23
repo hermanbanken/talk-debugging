@@ -1,5 +1,5 @@
-# OpenTelemetry
-https://opentelemetry.io/ is cross-platform (language, OS, etc.) cross-business (AWS, Google, DataDog, ZipKin, Splunk, Jaeger, etc.) tracing, logging & metric format.
+# OpenTelemetry demo
+https://opentelemetry.io/ is cross-platform (language, OS, etc.) cross-business (AWS, Google, DataDog, ZipKin, Splunk, Jaeger, etc.) tracing, logging & metric format. Each application exports telemetry to a common sink, which can then visualize traces across different applications.
 
 Example configuration in `telemetry.go`, which picks up [some standard environment](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/sdk-environment-variables.md) variables:
 

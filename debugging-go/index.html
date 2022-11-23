@@ -1,0 +1,6 @@
+<h1>Microservice Calculator</h1>
+<form method="post">
+    <input type="text" name="equation" placeholder="6 + 6 * 6" value="{{ .Equation }}" />
+    <input type="submit" value="Calculate" />
+    {{if .Result}}<div>Result: {{.Result}}</div>{{end}}
+</form>
