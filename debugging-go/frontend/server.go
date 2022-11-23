@@ -22,7 +22,6 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 )
 
 func init() {
@@ -59,7 +58,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	util.DoBusyWork(10000) // act busy
 
 	if r.Method == http.MethodPost {
-		trace.SpanFromContext(ctx).SetName("submit form")
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -78,7 +76,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	trace.SpanFromContext(ctx).SetName("render form")
 	indexTemplate.Execute(w, indexData{
 		Equation: "",
 		Result:   nil,
