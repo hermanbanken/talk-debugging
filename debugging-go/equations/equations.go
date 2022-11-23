@@ -67,6 +67,8 @@ func parseEquation(ctx context.Context, data []byte) (res job.Expr, err error) {
 	// emulate random 0..50ms work
 	time.Sleep(time.Duration(rand.Float32() * float32(50*time.Millisecond)))
 
+	// TODO use the right algorithm (https://en.wikipedia.org/wiki/Shunting_yard_algorithm)
+
 	// +/- lowest precedence
 	if idx := bytes.IndexFunc(data, func(r rune) bool { return r == '+' || r == '-' }); idx >= 0 {
 		res1, err := parseEquation(ctx, data[0:idx])
