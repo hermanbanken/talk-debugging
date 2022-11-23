@@ -85,7 +85,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func solveEquation(ctx context.Context, equation string) (res int, err error) {
-	_, span := otel.Tracer("frontend").Start(ctx, "solve")
+	ctx, span := otel.Tracer("frontend").Start(ctx, "solve")
 	defer span.End()
 	defer func() {
 		if err == nil {

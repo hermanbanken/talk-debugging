@@ -53,7 +53,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseEquation(ctx context.Context, data []byte) (res job.Expr, err error) {
-	_, span := otel.Tracer("equations").Start(ctx, "parseEquation")
+	ctx, span := otel.Tracer("equations").Start(ctx, "parseEquation")
 	span.SetAttributes(attribute.String("eq", string(data)))
 	defer span.End()
 	defer func() {
