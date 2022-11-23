@@ -22,6 +22,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -117,6 +118,7 @@ func solveRecursive(ctx context.Context, job jobt.Job) (res int, err error) {
 	ctx, span := otel.Tracer("frontend").Start(ctx, "solveRecursive")
 	span.SetAttributes(attribute.String("job", job.String()))
 	defer span.End()
+	telemetry.WrapZap(ctx, zap.L()).Sugar().Info("solving %s", job)
 
 	var a, b int
 

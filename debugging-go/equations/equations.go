@@ -18,6 +18,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -64,6 +65,7 @@ func parseEquation(ctx context.Context, data []byte) (res job.Expr, err error) {
 			span.RecordError(err)
 		}
 	}()
+	telemetry.WrapZap(ctx, zap.L()).Sugar().Info("parsing %q", string(data))
 
 	// emulate random 0..50ms work
 	time.Sleep(time.Duration(rand.Float32() * float32(50*time.Millisecond)))

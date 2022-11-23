@@ -15,6 +15,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -56,10 +57,12 @@ func calc(ctx context.Context, j job.Job) (res int, err error) {
 		if err == nil {
 			span.SetStatus(codes.Ok, "done")
 		} else {
+			telemetry.WrapZap(ctx, zap.L()).Sugar().Error("error calculating %s: %v", j, err)
 			span.SetStatus(codes.Error, err.Error())
 			span.RecordError(err)
 		}
 	}()
+	telemetry.WrapZap(ctx, zap.L()).Sugar().Debugf("calculating %s", j)
 
 	// emulate random 0..50ms work
 	time.Sleep(time.Duration(rand.Float32() * float32(50*time.Millisecond)))
