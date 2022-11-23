@@ -3,6 +3,7 @@ module dummy
 go 1.19
 
 require (
+	cloud.google.com/go/compute v1.6.1
 	cloud.google.com/go/profiler v0.3.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.10.1
 	github.com/pkg/errors v0.9.1
@@ -16,7 +17,6 @@ require (
 
 require (
 	cloud.google.com/go v0.100.2 // indirect
-	cloud.google.com/go/compute v1.6.1 // indirect
 	cloud.google.com/go/trace v1.2.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.34.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -28,7 +28,6 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/pprof v0.0.0-20220412212628-83db2b799d1f // indirect
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
-	github.com/mgenware/go-shunting-yard v0.0.0-20170306102834-6dc682c5e09c // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/otel/metric v0.33.0 // indirect
