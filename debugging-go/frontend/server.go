@@ -6,6 +6,7 @@ import (
 	_ "embed"
 	"encoding/gob"
 	"html/template"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -97,6 +98,12 @@ func solveEquation(ctx context.Context, equation string) (res int, err error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "equations")
 	}
+	if resp.StatusCode != 200 {
+		data, _ := io.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		return 0, errors.New(string(data))
+	}
+
 	err = gob.NewDecoder(resp.Body).Decode(&job)
 	if err != nil {
 		return 0, errors.Wrap(err, "gob")
@@ -141,6 +148,11 @@ func solveRecursive(ctx context.Context, job jobt.Job) (res int, err error) {
 	resp, err := otelhttp.Post(ctx, os.Getenv("URL_CALCULATOR"), "text/plain", buf)
 	if err != nil {
 		return 0, errors.Wrap(err, "calculator")
+	}
+	if resp.StatusCode != 200 {
+		data, _ := io.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		return 0, errors.New(string(data))
 	}
 	err = gob.NewDecoder(resp.Body).Decode(&res)
 	return
