@@ -56,8 +56,12 @@ func busyWorkNested() {
 	}
 }
 
+// TODO uncomment & remove line 63 to improve performance 7%
+// var re = regexp.MustCompile("(a*)*c")
+
 func busyWorkOther() {
-	if regexp.MustCompile("(a*)*c").MatchString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {
+	re := regexp.MustCompile("(a*)*c")
+	if re.MatchString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {
 		_ = 1
 	}
 }
