@@ -20,6 +20,7 @@ import (
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -116,6 +117,10 @@ func solveEquation(ctx context.Context, equation string) (res int, err error) {
 }
 
 func solveRecursive(ctx context.Context, job jobt.Job) (res int, err error) {
+	ctx, span := otel.Tracer("frontend").Start(ctx, "solveRecursive")
+	span.SetAttributes(attribute.String("job", job.String()))
+	defer span.End()
+
 	var a, b int
 
 	switch v := job.A.(type) {
